@@ -21,3 +21,14 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_ID }}/insta-front:latestvkg
+      - name: pull and compose up
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_IP }}
+          username: ubuntu
+          key: ${{ secrets.EC2_PEM }}
+          script: |
+            cd /home/ubuntu/insta-front
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker image prune -f
